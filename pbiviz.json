@@ -11,14 +11,16 @@
   },
   "apiVersion": "1.7.0",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Ulrich Fischer",
+    "email": "ulrich.fischer@hexagongeospatial.com"
   },
   "assets": {
     "icon": "assets/icon.png"
   },
   "externalJS": [
-    "node_modules/powerbi-visuals-utils-dataviewutils/lib/index.js"
+    "node_modules/powerbi-visuals-utils-dataviewutils/lib/index.js",
+    "node_modules/jquery/dist/jquery.min.js",
+    "external/init.jquery.js"
   ],
   "style": "style/visual.less",
   "capabilities": "capabilities.json",

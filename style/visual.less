@@ -11,18 +11,47 @@ p {
 // Hexagon Map
 
 @lightes-gray: #EAEAEA;
+@grid-gray: #F0F0F0;
 @hover-gray: #C8C8C8;
+@sidenav-gray: #FAFAFA;
+@topnav-height: 40px;
+@sidenav-width: 260px;
+
+.hxg.container {
+    box-sizing: border-box
+}
+
+*.hxg, *.hxg:before, *.hxg:after {
+    box-sizing: inherit;
+}
+
 
 .hxg.container {
     width: 100%;
     height: 100%;
+    border-top: none;
+}
+
+.hxg.map {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // height: ~'calc(100% -'@topnav-height + 2px~')';
+    height: 100%;
+    background-color: lightblue;
+    
+    &:before {
+        font-size: 2em;
+        line-height: 2em;
+        content: 'MAP PLACEHODLER'
+    }
 }
 
 .hxg.topnav {
 
     > ul {
         
-        display: flex;
+        display: none;
         flex-direction: row;
         margin: 0;
         padding: 0;
@@ -38,5 +67,53 @@ p {
                 background-color: @hover-gray;
             }
         }
+    }
+}
+
+
+.hxg.sidenav {
+
+    display: none;
+    position: absolute;
+    top: @topnav-height;
+    width: @sidenav-width;
+    height: ~'calc(100% -'@topnav-height + 0px~')';
+    background-color: @sidenav-gray; 
+
+
+    #sidenav-login {
+        margin: 1em;
+    }
+
+    input, label {
+
+        display: block;
+    }
+
+    input {
+        margin-bottom: 1em;
+
+        &[type=text] {
+            width: 100%;
+        }
+    }
+
+    label {
+        font-size: .9em;
+    }
+
+    input#api_url {
+        font-family: monospace
+    }
+}
+
+.hxg.container.edit {
+
+    .hxg.topnav > ul {
+        display: flex;
+    }
+
+    .hxg.sidenav {
+        display: block;
     }
 }

@@ -56,6 +56,29 @@
                     }
                 }
             }
+        },
+        "connectionData": {
+            "displayName": "Connection Data",
+            "properties": {
+                "url": {
+                    "displayName": "API URL",
+                    "type": {
+                        "text": true
+                    }
+                },
+                "username": {
+                    "displayName": "Username",
+                    "type": {
+                        "text": true
+                    }
+                },
+                "password": {
+                    "displayName": "Password",
+                    "type": {
+                        "text": true
+                    }
+                }
+            }
         }
     },
     "dataViewMappings": [

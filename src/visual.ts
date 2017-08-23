@@ -24,26 +24,34 @@
  *  THE SOFTWARE.
  */
 
+
 module powerbi.extensibility.visual {
     "use strict";
     export class Visual implements IVisual {
+        private host: IVisualHost;
         private target: HTMLElement;
-        private updateCount: number;
         private settings: VisualSettings;
+        private dataView: DataView;
+        private options: VisualUpdateOptions;
+        private client: Client;
 
         constructor(options: VisualConstructorOptions) {
             console.log('Visual constructor', options);
+            this.host = options.host;
             this.target = options.element;
-            this.updateCount = 0;
+            this.client = new Client();
         }
 
         public update(options: VisualUpdateOptions) {
-            this.settings = Visual.parseSettings(options && options.dataViews && options.dataViews[0]);
+            let dataViewAvailable = options && options.dataViews && options.dataViews[0];
+            this.settings = Visual.parseSettings(dataViewAvailable);
             console.log('Visual update', options);
-            this.target.innerHTML = `<p>Update count: <em>${(this.updateCount++)}</em></p>`;
 
-            this.target.innerHTML = Templates.getMarkup(options.editMode == EditMode.Advanced);
-
+            if(dataViewAvailable) {
+                this.target.innerHTML = Templates.getMarkup(options.editMode == EditMode.Advanced);
+                $('#api_connect').on('click', (e) => { this.connectVisual(); });
+                this.getConnectionData(options.dataViews[0]);
+            }
         }
 
         private static parseSettings(dataView: DataView): VisualSettings {
@@ -57,6 +65,53 @@ module powerbi.extensibility.visual {
          */
         public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
             return VisualSettings.enumerateObjectInstances(this.settings || VisualSettings.getDefault(), options);
+        }
+
+        /**
+         * Event registration
+         */
+        private connectVisual() {
+            
+            let url = $('#api_url').val();
+            let username = $('#api_username').val();
+            let password = $('#api_password').val();
+            
+            debugger;
+            this.client.login(username, password).then((token) => {
+                debugger;
+            });
+
+            this.persistConnectionData(url, username, password);
+        }
+
+        public getConnectionData(dataView: DataView) {
+
+            if(dataView.metadata && dataView.metadata.objects) {
+
+                let connectionData: any = dataView.metadata.objects['connectionData'];
+                $('#api_url').val(connectionData.url);
+                $('#api_username').val(connectionData.username);
+                $('#api_password').val(connectionData.password);
+            }
+        }
+
+        public persistConnectionData(url: string, username: string, password: string) {
+            let data: VisualObjectInstancesToPersist = {
+                merge: [
+                    <VisualObjectInstance>{
+                        objectName: 'connectionData',
+                        selector: undefined,
+                        properties: {
+                            'url': url,
+                            'username': username,
+                            'password': password
+                        }
+                    }
+                ]
+            }
+
+            this.host.persistProperties(data);
+            this.host.allowInteractions = true;
         }
     }
 }

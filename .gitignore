@@ -1,2 +1,17 @@
-/.vscode/
-/node_modules/
+#Log files
+*-debug.log
+*-error.log
+
+# Installed Modules
+node_modules/
+typings/
+
+# Temp Files
+.DS_Store
+/.scripts
+/dump
+.tmp
+
+# IDE / Editors
+.vscode
+*~
