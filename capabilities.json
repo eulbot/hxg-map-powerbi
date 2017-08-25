@@ -60,6 +60,12 @@
         "connectionData": {
             "displayName": "Connection Data",
             "properties": {
+                "tenant": {
+                    "displayName": "Tenant",
+                    "type": {
+                        "text": true
+                    }
+                },
                 "url": {
                     "displayName": "API URL",
                     "type": {
@@ -72,8 +78,8 @@
                         "text": true
                     }
                 },
-                "password": {
-                    "displayName": "Password",
+                "token": {
+                    "displayName": "Token",
                     "type": {
                         "text": true
                     }

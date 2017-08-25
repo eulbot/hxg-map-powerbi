@@ -32,8 +32,8 @@ module powerbi.extensibility.visual {
             return `
                 <div class="hxg topnav">
                     <ul>
-                        <li class="login"><span>Login</span></li>
-                        <li class="config"><span>Map Configs<span></li>
+                        <li data-tab="login-tab"><span>Login</span></li>
+                        <li data-tab="config-tab"><span>Map Configs<span></li>
                     </ul>
                 </div>
             `.trim().replace(/\n/g, '');
@@ -42,17 +42,28 @@ module powerbi.extensibility.visual {
         private static sidenav() {
             return `
                 <div class="hxg sidenav">
-                    <div id="sidenav-login">
-                        <label for="api_url">MapEnterprise API URL</label>
-                        <input id="api_url" type="text" placeholder="http://localhost/MApp/api">
+
+                    <div class="tab" data-tab="login-tab">
+
+                        <label for="api_tenant">Tenant</label>
+                        <input id="api_tenant" type="text" class="w-1-2">
+
+                        <label for="api_url">MapEnterprise Api Url</label>
+                        <input id="api_url" type="text" placeholder="http://localhost/MApp/api" class="w-1">
 
                         <label for="api_username">Username</label>
-                        <input id="api_username" type="text">
+                        <input id="api_username" type="text" class="w-2-3">
 
                         <label for="api_password">Password</label>
-                        <input id="api_password" type="password">
+                        <input id="api_password" type="password" class="w-2-3">
 
-                        <input id="api_connect" type="button" value="Connect">        
+                        <input id="api_connect" type="button" value="CONNECT" class="w-1-2">        
+                    </div>
+
+                    <div class="tab" data-tab="config-tab">
+                        <span style="">
+                            <input id="hxg_mv" type="button" value="sadf">
+                        </span>
                     </div>
                 </div>
             `
