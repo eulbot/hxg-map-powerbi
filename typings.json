@@ -1,5 +1,6 @@
 {
   "globalDependencies": {
-    "jquery": "registry:dt/jquery#1.10.0+20170310222111"
+    "jquery": "registry:dt/jquery#1.10.0+20170310222111",
+    "knockout": "registry:dt/knockout#3.4.0+20170311010955"
   }
 }
