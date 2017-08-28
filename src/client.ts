@@ -3,43 +3,44 @@ module powerbi.extensibility.visual {
 
     export class Client {
 
-        token: IToken;
+        token: KnockoutObservable<IToken>;
         private tenant: string;
-        private endpointsUrl: string;
+        private endpoint: string;
         private clientID: string;
         private refreshTokenPromise: JQueryPromise<IToken>;
 
         constructor() {
             this.clientID = 'Studio';
+            this.token = ko.observable<IToken>();
         }
 
-        public authorize(tenant: string, endpointsUrl: string, username: string, password: string) {
+        public authorize(tenant: string, endpoint: string, username: string, password: string): JQueryPromise<IToken> {
 
             this.tenant = tenant;
-            this.endpointsUrl = endpointsUrl;
-
+            this.endpoint = endpoint;
             var headers = this.tenant ? { Tenant: this.tenant } : {};
-
+            
             return $.ajax({
-                url: `${this.endpointsUrl}/api/v1/oauth2/token`,
+                url: `${this.endpoint}/api/v1/oauth2/token`,
                 headers: headers,
                 data: <ILoginRequest>{ grant_type: 'password', username: username, password: password, client_id: this.clientID },
                 type: 'POST'
             }).then((newToken: IToken) => {
                 this.setToken(newToken);
+                return newToken;
             });
         }    
 
         public readMapViews() {
 
             return this.ajax({
-                url: `${this.endpointsUrl}/api/v2/studio/mapviews`
+                url: `${this.endpoint}/api/v2/studio/mapviews`
             });
         }
 
         public ajax<T>(settings: JQueryAjaxSettings): JQueryPromise<T> {
             
-            var token = this.token;
+            var token = this.token();
 
             if (!token || token.initialRecharge === "true")
                 return $.Deferred<T>().reject();
@@ -72,8 +73,8 @@ module powerbi.extensibility.visual {
         }
 
         protected refreshToken(refreshToken: string, clientId: string): JQueryPromise<IToken> {
-            return $.ajax({
-                url: `${this.endpointsUrl}api/v1/oauth2/token`,
+            return $.ajax({ 
+                url: `${this.endpoint}api/v1/oauth2/token`,
                 data: <IRefreshTokenRequest>{ grant_type: 'refresh_token', refresh_token: refreshToken, client_id: clientId },
                 type: 'POST'
             });
@@ -83,13 +84,19 @@ module powerbi.extensibility.visual {
             this.tenant = tenant;
         }
 
-        public setEnpointsUrl(endpointsUrl: string) {
-            this.endpointsUrl = endpointsUrl;
+        public setEnpoint(endpoint: string) {
+            this.endpoint = endpoint;
         }
 
         private setToken(token: IToken) {
             token.expiration_date = Date.now() + (token.expires_in * 1000);
-            this.token = token;
+            this.token(token);
+        }
+
+        public isTokenValid() {
+
+            let token = this.token();
+            return (token && Date.now() < token.expiration_date);
         }
     }
 

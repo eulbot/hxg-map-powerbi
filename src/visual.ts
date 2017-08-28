@@ -7,6 +7,7 @@ module powerbi.extensibility.visual {
         private dataView: DataView;
         private options: VisualUpdateOptions;
         private client: Client;
+        private vm: VisualModel;
 
         constructor(options: VisualConstructorOptions) {
             console.log('Visual constructor', options);
@@ -15,10 +16,15 @@ module powerbi.extensibility.visual {
             
             this.client = new Client();
             this.target.innerHTML = Templates.getMarkup(true);
-            let vm: ConnectionModel = new ConnectionModel();
-            let el = $('.hxg.container')[0];
-            ko.applyBindings(vm, el);
-
+            this.vm = new VisualModel(this.host);
+            let el = document.querySelector('.hxg.container');
+            
+            try {
+                ko.applyBindings(this.vm, el);
+            }
+            catch(e) {
+                console.error(e);
+            }
         }
 
         public update(options: VisualUpdateOptions) {
@@ -28,7 +34,13 @@ module powerbi.extensibility.visual {
 
             if(dataViewAvailable) {
                 
-
+                try {
+                    this.vm.connectionModel.readModel(options.dataViews[0]); 
+                }
+                catch(e) {
+                    debugger;
+                }
+                
                 // $('#api_connect').on('click', (e) => { 
                     
                 //     if(this.client.token)
@@ -103,7 +115,7 @@ module powerbi.extensibility.visual {
 
                 if(this.client.token) {
                     this.client.setTenant(connectionData.tenant);
-                    this.client.setEnpointsUrl(connectionData.url);
+                    this.client.setEnpoint(connectionData.url);
                     visualConnected = true;
                 }
             }
@@ -119,6 +131,7 @@ module powerbi.extensibility.visual {
         }
 
         public persistConnectionData(tenant: string, url: string, username: string, token: string) {
+            
             let data: VisualObjectInstancesToPersist = {
                 merge: [
                     <VisualObjectInstance>{

@@ -13,6 +13,7 @@
     "node_modules/powerbi-visuals-utils-dataviewutils/lib/index.d.ts",
     "typings/index.d.ts",
     "src/templates.ts",
+    "src/models/visual.ts",
     "src/models/connection.ts",
     "src/settings.ts",
     "src/visual.ts"
