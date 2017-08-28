@@ -27,10 +27,17 @@ module powerbi.extensibility.visual {
             this.client = new Client();
 
             this.authorize = () => {
-                this.client.authorize(this.tenant(), this.endpoint(), this.username(), this.password()).then((token: IToken) => {
-                    console.info('Connected to MApp Enterprise, persisting login information');
+
+                if(!this.connected()) {
+                    this.client.authorize(this.tenant(), this.endpoint(), this.username(), this.password()).then((token: IToken) => {
+                        console.info('Connected to MApp Enterprise, persisting login information');
+                        this.persistModel();
+                    });
+                }
+                else {
+                    this.client.token(undefined);
                     this.persistModel();
-                });
+                }
             }
 
             this.persistModel = () => {
@@ -44,7 +51,7 @@ module powerbi.extensibility.visual {
                                 'tenant': this.tenant(),
                                 'url': this.endpoint(),
                                 'username': this.username(),
-                                'token': JSON.stringify(this.client.token)
+                                'token': JSON.stringify(this.client.token())
                             }
                         }
                     ]
@@ -72,10 +79,10 @@ module powerbi.extensibility.visual {
             }
 
             this.connected = ko.pureComputed(() => {
-                
-                let c = this.client.isTokenValid();
-                console.info('connected', c);
-                return c;
+
+                let isValid = this.client.isTokenValid();
+                console.info('Connected', isValid);
+                return isValid;
             });
 
             this.buttonDisplayName = ko.pureComputed(() => {

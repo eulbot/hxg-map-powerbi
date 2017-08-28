@@ -27,6 +27,7 @@ module powerbi.extensibility.visual {
                 type: 'POST'
             }).then((newToken: IToken) => {
                 this.setToken(newToken);
+                console.info('Token expires at', newToken.expiration_date);
                 return newToken;
             });
         }    
@@ -96,7 +97,7 @@ module powerbi.extensibility.visual {
         public isTokenValid() {
 
             let token = this.token();
-            return (token && Date.now() < token.expiration_date);
+            return (token != undefined && Date.now() < token.expiration_date);
         }
     }
 
